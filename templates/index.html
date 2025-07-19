@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nosso Amor</title>
+  <style>
+    body {
+      background: url("{{ url_for('static', filename='bg/fundo.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      padding: 30px;
+      color: #ffffff;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+    }
+
+    .contador {
+      font-size: 20px;
+      margin: 0 auto 30px auto;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
+    .fotos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      justify-items: center;
+      padding: 0 50px;
+    }
+
+    .foto-item {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      max-width: 320px;
+      position: relative;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .foto-item:hover {
+      box-shadow: 0 8px 20px rgba(255, 20, 147, 0.7);
+    }
+
+    .fotos img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .legenda {
+      margin-top: 8px;
+      font-size: 16px;
+      color: #333;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, opacity 0.5s ease;
+      opacity: 0;
+    }
+
+    /* Mostrar legenda no hover */
+    .foto-item:hover .legenda {
+      max-height: 100px; /* suficiente para a legenda */
+      opacity: 1;
+    }
+
+    /* Classe para mostrar legenda no clique */
+    .legenda.show {
+      max-height: 100px;
+      opacity: 1;
+    }
+
+    .btn-musica {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #ff69b4;
+      border: none;
+      padding: 14px 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+
+    .btn-musica:hover {
+      background: #ff1493;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .icone-svg {
+      width: 30px;
+      height: 30px;
+      transition: transform 0.5s linear;
+      fill: #fff;
+    }
+
+    .girando {
+      animation: girar 2s linear infinite;
+    }
+
+    @keyframes girar {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Música -->
+  <audio id="musica" loop>
+    <source src="{{ url_for('static', filename='musica/suamusica.mp3') }}" type="audio/mpeg">
+    Seu navegador não suporta áudio HTML5.
+  </audio>
+
+  <!-- Botão de Música -->
+  <button id="btnMusica" class="btn-musica">
+    <svg id="iconeMusica" class="icone-svg" viewBox="0 0 64 64">
+      <path d="M48 6v36.5a8 8 0 1 1-4-6.9V18H24v24.5a8 8 0 1 1-4-6.9V6h28z"/>
+    </svg>
+  </button>
+
+  <h1>O Amor de </h1>
+  <h1>FRANK & MIRELLA</h1>
+  <h1>já dura:</h1>
+
+  <div class="contador">
+    {{ dias }} dias, {{ horas }} horas, {{ minutos }} minutos e {{ segundos }} segundos
+    <p>
+      Cada dia ao seu lado é como um novo capítulo de um livro que eu nunca quero terminar.
+      Entre risadas, olhares e silêncios compartilhados, a gente constrói um cantinho só nosso — cheio de memórias, planos e sonhos entrelaçados.
+      Que o tempo seja sempre generoso conosco, que multiplique nossos dias, nossas horas, nossos segundos juntos.❤️
+      Que cada foto conte uma história, cada abraço seja um lar, e que cada amanhecer nos lembre o quão lindo é amar — de verdade, de perto, de peito aberto.
+      Obrigado(a) por existir, por me escolher todos os dias, por fazer da minha vida o lugar mais bonito pra morar.💕
+    </p>
+  </div>
+
+  <div class="fotos">
+    {% for foto, frase in fotos %}
+      <div class="foto-item">
+        <img src="{{ url_for('static', filename='fotos/' + foto) }}" alt="Foto do nosso amor" />
+        <p class="legenda">{{ frase }}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    const musica = document.getElementById('musica');
+    const btnMusica = document.getElementById('btnMusica');
+    const icone = document.getElementById('iconeMusica');
+
+    btnMusica.addEventListener('click', () => {
+      if (musica.paused) {
+        musica.play();
+        icone.classList.add('girando');
+      } else {
+        musica.pause();
+        icone.classList.remove('girando');
+      }
+    });
+
+    musica.volume = 0.5; // Volume padrão
+
+    // Mostrar/Esconder legenda no clique
+    document.querySelectorAll('.foto-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const legenda = item.querySelector('.legenda');
+        legenda.classList.toggle('show');
+      });
+    });
+  </script>
+</body>
+</html>
